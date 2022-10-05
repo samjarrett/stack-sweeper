@@ -73,7 +73,7 @@ def parse_args(args: List[str]) -> argparse.Namespace:
     )
     parser.add_argument(
         "--delete",
-        help="Should this delete identified stacks?",
+        help="Should this delete identified stacks? (will perform a DRY RUN if not specified)",
         action="store_true",
         required=False,
         default=False,
@@ -95,7 +95,7 @@ def parse_args(args: List[str]) -> argparse.Namespace:
     )
     parser.add_argument(
         "--region",
-        help="Should delete operations wait for each stack to finish?",
+        help="What AWS region should be used? (Default: AWS_DEFAULT_REGION environment variable",
         required=False,
         default=os.environ.get("AWS_DEFAULT_REGION", DEFAULT_REGION),
     )
