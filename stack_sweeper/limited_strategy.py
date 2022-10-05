@@ -26,4 +26,4 @@ class LimitedStrategy(BaseStrategy):
         return result
 
     def __str__(self):
-        return f"LimitedStrategy({self.limit})"
+        return f"LimitedStrategy({self.limit}, nested_strategy={self.nested_strategy})"

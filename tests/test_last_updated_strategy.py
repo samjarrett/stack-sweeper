@@ -67,3 +67,16 @@ def test_str():
     # test that the other parts are only chopped off if they're 0
     strategy = last_updated_strategy.LastUpdatedStrategy(timedelta(days=90, hours=2))
     assert str(strategy) == "LastUpdatedStrategy(90 days, 2:00:00)"
+
+
+def test_get_mark_reason(stack: cloudformation.Stack):
+    """Tests LastUpdatedStrategy.get_mark_reason()"""
+    strategy = last_updated_strategy.LastUpdatedStrategy(
+        timedelta(days=7), datetime(2020, 1, 9, 9, 0, 0, tzinfo=tzutc())
+    )
+
+    future_time = datetime(2020, 1, 1, 9, 0, 0, tzinfo=tzutc())
+    stack.last_updated_at = future_time
+    assert "last updated 8 days ago (threshold: 7 days" in strategy.get_mark_reason(
+        stack
+    )

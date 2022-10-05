@@ -10,6 +10,9 @@ class AlwaysTrueStrategy(base_strategy.BaseStrategy):
         """The stack should always be removed"""
         return True
 
+    def __str__(self):
+        return "AlwaysTrueStrategy"
+
 
 class AlternatingTrueStrategy(base_strategy.BaseStrategy):
     """A flip-flopping strategy"""
@@ -50,7 +53,7 @@ def test_limited_strategy(stack: cloudformation.Stack):
 def test_str():
     """Tests LimitedStrategy string representation"""
     strategy = limited_strategy.LimitedStrategy(1, AlwaysTrueStrategy())
-    assert str(strategy) == "LimitedStrategy(1)"
+    assert str(strategy) == "LimitedStrategy(1, nested_strategy=AlwaysTrueStrategy)"
 
     strategy = limited_strategy.LimitedStrategy(30, AlwaysTrueStrategy())
-    assert str(strategy) == "LimitedStrategy(30)"
+    assert str(strategy) == "LimitedStrategy(30, nested_strategy=AlwaysTrueStrategy)"

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Optional
 
 from dateutil import parser
@@ -22,19 +22,23 @@ class ExpirationTagStrategy(BaseStrategy):
         self.tag_name = tag_name
         self.compare_time = compare_time
 
+    def expiry(self, stack: Stack) -> datetime:
+        """Provide a parsed, tz-aware expiry datetime object"""
+        expiry = parser.parse(stack.tags[self.tag_name])
+        if not expiry.tzinfo:  # force it to have a timezone of UTC if none is set
+            expiry = expiry.replace(tzinfo=tzutc())
+
+        return expiry
+
     def should_remove(self, stack: Stack) -> bool:
         """Should this stack be removed?"""
         if self.tag_name not in stack.tags:
             return False
 
         try:
-            expiry = parser.parse(stack.tags[self.tag_name])
-            if not expiry.tzinfo:  # force it to have a timezone of UTC if none is set
-                expiry = expiry.replace(tzinfo=tzutc())
+            result = self.expiry(stack) <= self.compare_time
         except ParserError:
             return False
-
-        result = expiry <= self.compare_time
 
         if result:
             stack.mark(self)
@@ -43,3 +47,10 @@ class ExpirationTagStrategy(BaseStrategy):
 
     def __str__(self):
         return f"ExpirationTagStrategy({self.tag_name})"
+
+    def get_mark_reason(self, stack: Stack) -> str:
+        """Get a reason why the stack was marked"""
+        expiry = self.expiry(stack)
+        age: timedelta = self.compare_time - expiry
+
+        return f"expired {age.days} days ago (expiry: {expiry.isoformat(timespec='seconds')})"

@@ -75,3 +75,14 @@ def test_str():
 
     strategy = expiration_tag_strategy.ExpirationTagStrategy("stack-sweeper:expire")
     assert str(strategy) == "ExpirationTagStrategy(stack-sweeper:expire)"
+
+
+def test_get_mark_reason(stack: cloudformation.Stack):
+    """Tests ExpirationTagStrategy.get_mark_reason()"""
+    strategy = expiration_tag_strategy.ExpirationTagStrategy(
+        "expiration", datetime(2020, 1, 9, 9, 0, 0, tzinfo=tzutc())
+    )
+
+    past_time = datetime(2020, 1, 7, 9, 0, 0, tzinfo=tzutc())
+    stack.tags["expiration"] = past_time.isoformat(timespec="seconds")
+    assert "expired 2 days ago" in strategy.get_mark_reason(stack)

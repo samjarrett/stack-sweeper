@@ -36,3 +36,14 @@ class LastUpdatedStrategy(BaseStrategy):
     def __str__(self):
         allowed_delta = str(self.allowed_delta).replace(", 0:00:00", "")
         return f"LastUpdatedStrategy({allowed_delta})"
+
+    def get_mark_reason(self, stack: Stack) -> str:
+        """Get a reason why the stack was marked"""
+        last_updated_at = stack.last_updated_at
+        age = self.compare_time - last_updated_at
+        allowed_delta = str(self.allowed_delta).replace(", 0:00:00", "")
+
+        return (
+            f"last updated {age.days} days ago "
+            f"(threshold: {allowed_delta}, last updated: {last_updated_at.strftime('%Y-%m-%d')})"
+        )
