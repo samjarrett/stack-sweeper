@@ -54,3 +54,16 @@ def test_expiration_dynamic(stack: cloudformation.Stack):
     past_time = datetime.now(tz=tzutc()) - timedelta(days=7, hours=1)
     stack.last_updated_at = past_time
     assert strategy.should_remove(stack)
+
+
+def test_str():
+    """Tests LastUpdatedStrategy string representation"""
+    strategy = last_updated_strategy.LastUpdatedStrategy(timedelta(days=7))
+    assert str(strategy) == "LastUpdatedStrategy(7 days)"
+
+    strategy = last_updated_strategy.LastUpdatedStrategy(timedelta(days=90))
+    assert str(strategy) == "LastUpdatedStrategy(90 days)"
+
+    # test that the other parts are only chopped off if they're 0
+    strategy = last_updated_strategy.LastUpdatedStrategy(timedelta(days=90, hours=2))
+    assert str(strategy) == "LastUpdatedStrategy(90 days, 2:00:00)"

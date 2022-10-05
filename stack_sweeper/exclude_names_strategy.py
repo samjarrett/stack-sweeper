@@ -29,3 +29,10 @@ class ExcludeNamesStrategy(BaseStrategy):
                     return False
 
         return True
+
+    def __str__(self):
+        list_to_str = lambda a_list: f"[{', '.join(a_list)}]" if a_list else "None"
+
+        exclude_names = list_to_str(self.exclude_names)
+        exclude_name_prefixes = list_to_str(self.exclude_name_prefixes)
+        return f"ExcludeNamesStrategy(exclude_names={exclude_names}, exclude_name_prefixes={exclude_name_prefixes})"

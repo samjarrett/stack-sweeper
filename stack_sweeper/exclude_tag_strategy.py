@@ -13,3 +13,6 @@ class ExcludeTagStrategy(BaseStrategy):
     def should_remove(self, stack: Stack) -> bool:
         """Should this stack be removed?"""
         return self.tag_name not in stack.tags
+
+    def __str__(self):
+        return f"ExcludeTagStrategy({self.tag_name})"

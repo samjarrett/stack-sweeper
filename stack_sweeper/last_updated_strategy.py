@@ -27,3 +27,7 @@ class LastUpdatedStrategy(BaseStrategy):
         expiry = stack.last_updated_at + self.allowed_delta
 
         return expiry <= self.compare_time
+
+    def __str__(self):
+        allowed_delta = str(self.allowed_delta).replace(", 0:00:00", "")
+        return f"LastUpdatedStrategy({allowed_delta})"

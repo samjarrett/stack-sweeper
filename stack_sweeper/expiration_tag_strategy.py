@@ -35,3 +35,6 @@ class ExpirationTagStrategy(BaseStrategy):
             return False
 
         return expiry <= self.compare_time
+
+    def __str__(self):
+        return f"ExpirationTagStrategy({self.tag_name})"

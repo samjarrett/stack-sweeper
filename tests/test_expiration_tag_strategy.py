@@ -66,3 +66,12 @@ def test_expiration_no_timezone(stack: cloudformation.Stack):
     past_time = datetime.utcnow() - timedelta(minutes=2)
     stack.tags["expiration"] = past_time.isoformat(timespec="seconds")
     assert strategy.should_remove(stack)
+
+
+def test_str():
+    """Tests ExpirationTagStrategy string representation"""
+    strategy = expiration_tag_strategy.ExpirationTagStrategy("expiry")
+    assert str(strategy) == "ExpirationTagStrategy(expiry)"
+
+    strategy = expiration_tag_strategy.ExpirationTagStrategy("stack-sweeper:expire")
+    assert str(strategy) == "ExpirationTagStrategy(stack-sweeper:expire)"

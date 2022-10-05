@@ -23,7 +23,7 @@ class AlternatingTrueStrategy(base_strategy.BaseStrategy):
 
 
 def test_limited_strategy(stack: cloudformation.Stack):
-    """Tests ExpirationTagStrategy.should_remove() cases"""
+    """Tests LimitedStrategy.should_remove() cases"""
     strategy = limited_strategy.LimitedStrategy(5, AlwaysTrueStrategy())
 
     # First five should be removed
@@ -45,3 +45,12 @@ def test_limited_strategy(stack: cloudformation.Stack):
     # All subsequent ones should not be removed
     for _ in range(5):
         assert not strategy.should_remove(stack)
+
+
+def test_str():
+    """Tests LimitedStrategy string representation"""
+    strategy = limited_strategy.LimitedStrategy(1, AlwaysTrueStrategy())
+    assert str(strategy) == "LimitedStrategy(1)"
+
+    strategy = limited_strategy.LimitedStrategy(30, AlwaysTrueStrategy())
+    assert str(strategy) == "LimitedStrategy(30)"

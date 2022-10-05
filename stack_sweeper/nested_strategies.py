@@ -12,6 +12,12 @@ class BaseMultiNestedStrategy(BaseStrategy):
     def __init__(self, nested_strategies: List[BaseStrategy]):
         self.nested_strategies = nested_strategies
 
+    def __str__(self):
+        nested_strategies = [
+            str(nested_strategy) for nested_strategy in self.nested_strategies
+        ]
+        return f"{self.__class__.__name__}(nested_strategies=[{', '.join(nested_strategies)}])"
+
 
 class NestedAllStrategy(BaseMultiNestedStrategy):
     """A strategy that requires that all nested strategies concur before the stack is selected"""

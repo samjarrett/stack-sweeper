@@ -24,3 +24,6 @@ class LimitedStrategy(BaseStrategy):
             self.processed += 1
 
         return result
+
+    def __str__(self):
+        return f"LimitedStrategy({self.limit})"
