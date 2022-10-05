@@ -21,6 +21,12 @@ def test_expiration_not_valid(stack: cloudformation.Stack):
     # Test when the tag isn't a parsable datetime (fail safe - don't delete)
     stack.tags["expiration"] = "2020-01sadasda-01 10:00:00Z"
     assert not strategy.should_remove(stack)
+    stack.tags["expiration"] = "never"
+    assert not strategy.should_remove(stack)
+    stack.tags["expiration"] = "don't expire"
+    assert not strategy.should_remove(stack)
+    stack.tags["expiration"] = "False"
+    assert not strategy.should_remove(stack)
 
     # Test when the tag is an empty string (fail safe - don't delete)
     stack.tags["expiration"] = ""
