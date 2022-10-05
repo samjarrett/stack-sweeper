@@ -1,7 +1,6 @@
 import time
-from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, Iterator, Optional
+from typing import Any, Dict, Iterator, Optional, List
 
 from .log_utils import log
 from .paginator import paginate
@@ -28,17 +27,23 @@ def log_event(
     return log(f"{logical_resource_id} - {resource_status}")
 
 
-@dataclass
 class Stack:
     """Class that holds information about a CloudFormation stack, and can perform update to it"""
 
     stack_id: str
     name: str
-    parameters: Dict
-    tags: Dict
+    parameters: Dict[str, str]
+    tags: Dict[str, str]
     created_at: datetime
     last_updated_at: datetime
+    marked_by_strategies: List
     cloudformation: Any
+
+    def __init__(self, **kwargs):
+        for attribute, value in kwargs.items():
+            setattr(self, attribute, value)
+
+        self.marked_by_strategies = []
 
     @classmethod
     def factory_from_stack_detail(cls, cloudformation, stack_detail: Dict[str, Any]):
@@ -126,6 +131,10 @@ class Stack:
             time.sleep(5)
 
         return stack_status
+
+    def mark(self, strategy):
+        """Mark this stack as being selected by the strategy"""
+        self.marked_by_strategies.append(strategy)
 
     def __describe(self) -> Dict:
         """Call CloudFormation DescribeStack"""

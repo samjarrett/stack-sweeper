@@ -26,7 +26,12 @@ class LastUpdatedStrategy(BaseStrategy):
         """Should this stack be removed?"""
         expiry = stack.last_updated_at + self.allowed_delta
 
-        return expiry <= self.compare_time
+        result = expiry <= self.compare_time
+
+        if result:
+            stack.mark(self)
+
+        return result
 
     def __str__(self):
         allowed_delta = str(self.allowed_delta).replace(", 0:00:00", "")

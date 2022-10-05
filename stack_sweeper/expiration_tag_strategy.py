@@ -34,7 +34,12 @@ class ExpirationTagStrategy(BaseStrategy):
         except ParserError:
             return False
 
-        return expiry <= self.compare_time
+        result = expiry <= self.compare_time
+
+        if result:
+            stack.mark(self)
+
+        return result
 
     def __str__(self):
         return f"ExpirationTagStrategy({self.tag_name})"
