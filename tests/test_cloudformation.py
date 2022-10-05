@@ -1,6 +1,6 @@
 # pylint:disable=redefined-outer-name
 from datetime import datetime
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Optional
 
 import pytest  # type: ignore
 from botocore.exceptions import ClientError  # type: ignore
@@ -133,10 +133,13 @@ def test_wait_success(
 
 
 def __generate_describe_stack_response(
-    stack_name: str, tags: List[Dict[str, str]], parameters: List[Dict[str, str]],
-) -> Dict[str, Union[str, bool, datetime, List[Dict[str, str]]]]:
+    stack_name: str,
+    tags: List[Dict[str, str]],
+    parameters: List[Dict[str, str]],
+    parent: Optional[str] = None,
+) -> Dict[str, Union[str, datetime, List[Dict[str, str]]]]:
     """Generates a describe_stack response"""
-    return {
+    response: Dict[str, Union[str, datetime, List[Dict[str, str]]]] = {
         "StackName": stack_name,
         "StackId": f"arn:aws:cloudformation:ap-southeast-2:123456789012:stack/{stack_name}"
         "/bd6129c0-de8c-11e9-9c70-0ac26335768c",
@@ -146,6 +149,15 @@ def __generate_describe_stack_response(
         "Tags": tags,
         "Parameters": parameters,
     }
+
+    if parent:
+        parent_stack_id = (
+            f"arn:aws:cloudformation:ap-southeast-2:123456789012:stack/{parent}"
+        )
+        response["ParentId"] = parent_stack_id
+        response["RootId"] = parent_stack_id
+
+    return response
 
 
 def test_get_stacks(fake_cloudformation_client: StubbedClient):
@@ -189,3 +201,14 @@ def test_get_stacks(fake_cloudformation_client: StubbedClient):
     assert len(stacks) == 3
     assert stacks[2].name == "stack-three"
     assert stacks[2].parameters == {"ParamOne": "Value"}
+
+
+def test_get_stacks_exclude_nested_stacks(fake_cloudformation_client: StubbedClient):
+    """Test cloudformation.get_stacks() exclude nested stacks"""
+    stack_responses = [
+        __generate_describe_stack_response("stack-one", [], []),
+        __generate_describe_stack_response("stack-two", [], [], "stack-one"),
+    ]
+    stubs.stub_describe_stacks(fake_cloudformation_client.stub, stack_responses)
+    stacks = list(cloudformation.get_stacks(fake_cloudformation_client.client))
+    assert len(stacks) == 1

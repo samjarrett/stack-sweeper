@@ -158,5 +158,8 @@ def get_stacks(cloudformation) -> Iterator[Stack]:
     """Retrieve all stacks as Stack objects"""
     return map(
         lambda stack: Stack.factory_from_stack_detail(cloudformation, stack),
-        paginate(cloudformation.describe_stacks),
+        filter(
+            lambda stack: "ParentId" not in stack,
+            paginate(cloudformation.describe_stacks),
+        ),
     )
