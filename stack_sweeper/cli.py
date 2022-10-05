@@ -1,4 +1,5 @@
 import argparse
+import os
 import sys
 import logging
 from datetime import timedelta
@@ -127,6 +128,13 @@ def get_strategy_from_args(args: argparse.Namespace):
 def main(args: argparse.Namespace):  # pragma: no cover
     """The main entry point"""
     log_setup(args.log_level)
+
+    if not args.delete:
+        log(
+            "This is a DRY RUN only. To actually delete stacks, you must add --delete to the execution"
+        )
+        command = " ".join(sys.argv[1:])
+        log(f"e.g.: {os.path.basename(sys.argv[0])} {command} --delete")
 
     strategy = get_strategy_from_args(args)
 
