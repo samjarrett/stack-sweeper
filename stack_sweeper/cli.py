@@ -17,6 +17,8 @@ from .nested_strategies import NestedAllStrategy, NestedAnyStrategy
 from .expiration_tag_strategy import ExpirationTagStrategy
 from .base_strategy import BaseStrategy
 
+DEFAULT_REGION = "ap-southeast-2"
+
 
 def parse_args(args: List[str]) -> argparse.Namespace:
     """Parse CLI arguments"""
@@ -88,6 +90,12 @@ def parse_args(args: List[str]) -> argparse.Namespace:
         default=True,
         dest="wait",
     )
+    parser.add_argument(
+        "--region",
+        help="Should delete operations wait for each stack to finish?",
+        required=False,
+        default=os.environ.get("AWS_DEFAULT_REGION", DEFAULT_REGION),
+    )
 
     parsed_args = parser.parse_args(args=args)
     if not any([parsed_args.stack_update_age, parsed_args.expiry_tag]):
@@ -152,7 +160,7 @@ def main(args: argparse.Namespace):  # pragma: no cover
 
     log(f"Using strategy configuration: {str(strategy)}", logging.DEBUG)
 
-    cloudformation = boto3.client("cloudformation")
+    cloudformation = boto3.client("cloudformation", region_name=args.region)
     stacks = list(get_stacks(cloudformation))
 
     filtered_stacks = list(filter(strategy.should_remove, stacks))
