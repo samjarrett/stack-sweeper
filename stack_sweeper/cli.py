@@ -170,6 +170,7 @@ def main(args: argparse.Namespace):  # pragma: no cover
         if args.delete:
             try:
                 if args.disable_termination_protection and stack.termination_protection:
+                    log(f"Disabling termination protection on stack {stack.name}")
                     stack.disable_termination_protection()
 
                 stack.delete(args.wait)
