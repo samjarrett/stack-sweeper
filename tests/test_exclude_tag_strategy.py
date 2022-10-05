@@ -1,4 +1,4 @@
-from stack_sweeper import exclude_tag_strategy, cloudformation
+from stack_sweeper import cloudformation, exclude_tag_strategy
 
 
 def test_not_excluded(stack: cloudformation.Stack):
@@ -6,7 +6,7 @@ def test_not_excluded(stack: cloudformation.Stack):
     strategy = exclude_tag_strategy.ExcludeTagStrategy("stack-sweep:ignore")
 
     # Test when the stack doesn't have any tags
-    stack.tags = dict()
+    stack.tags = {}
     assert strategy.should_remove(stack)
 
     # test when the stack has other tags

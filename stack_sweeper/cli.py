@@ -1,21 +1,21 @@
 import argparse
+import logging
 import os
 import sys
-import logging
 from datetime import timedelta
 from typing import List
 
 import boto3  # type: ignore
 
-from .log_utils import log, log_setup
+from .base_strategy import BaseStrategy
 from .cloudformation import get_stacks
 from .exclude_names_strategy import ExcludeNamesStrategy
 from .exclude_tag_strategy import ExcludeTagStrategy
+from .expiration_tag_strategy import ExpirationTagStrategy
 from .last_updated_strategy import LastUpdatedStrategy
 from .limited_strategy import LimitedStrategy
+from .log_utils import log, log_setup
 from .nested_strategies import NestedAllStrategy, NestedAnyStrategy
-from .expiration_tag_strategy import ExpirationTagStrategy
-from .base_strategy import BaseStrategy
 
 DEFAULT_REGION = "ap-southeast-2"
 
@@ -60,7 +60,10 @@ def parse_args(args: List[str]) -> argparse.Namespace:
         required=False,
     )
     parser.add_argument(
-        "--limit", type=int, help="maximum number of stacks to delete", required=False,
+        "--limit",
+        type=int,
+        help="maximum number of stacks to delete",
+        required=False,
     )
     parser.add_argument(
         "--log-level",
@@ -114,7 +117,7 @@ def parse_args(args: List[str]) -> argparse.Namespace:
 
 def get_strategy_from_args(args: argparse.Namespace):
     """Construct a strategy from args"""
-    age_strategies: List[BaseStrategy] = list()
+    age_strategies: List[BaseStrategy] = []
     if args.expiry_tag:
         age_strategies.append(ExpirationTagStrategy(args.expiry_tag))
 

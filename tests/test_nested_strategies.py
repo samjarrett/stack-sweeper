@@ -1,26 +1,6 @@
-from stack_sweeper import base_strategy, nested_strategies, cloudformation
+from stack_sweeper import cloudformation, nested_strategies
 
-
-class AlwaysTrueStrategy(base_strategy.BaseStrategy):
-    """An always-true strategy. Because some people want to watch the world burn"""
-
-    def should_remove(self, stack: cloudformation.Stack) -> bool:
-        """The stack should always be removed"""
-        return True
-
-    def __str__(self):
-        return "AlwaysTrueStrategy"
-
-
-class AlwaysFalseStrategy(base_strategy.BaseStrategy):
-    """An always-false strategy. Chaotic evil"""
-
-    def should_remove(self, stack: cloudformation.Stack) -> bool:
-        """The stack should never be removed"""
-        return False
-
-    def __str__(self):
-        return "AlwaysFalseStrategy"
+from .conftest import AlwaysFalseStrategy, AlwaysTrueStrategy
 
 
 def test_nested_all_strategy(stack: cloudformation.Stack):

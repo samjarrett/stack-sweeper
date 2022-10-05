@@ -1,6 +1,6 @@
 # pylint:disable=redefined-outer-name
 from datetime import datetime
-from typing import List, Dict, Union, Optional
+from typing import Dict, List, Optional, Union
 
 import pytest  # type: ignore
 from botocore.exceptions import ClientError  # type: ignore
@@ -8,7 +8,7 @@ from botocore.exceptions import ClientError  # type: ignore
 from stack_sweeper import cloudformation
 
 from . import stubs
-from .conftest import StubbedClient, STACK_ID
+from .conftest import STACK_ID, StubbedClient
 
 
 def test_status(fake_cloudformation_client: StubbedClient, stack: cloudformation.Stack):

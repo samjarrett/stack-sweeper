@@ -1,4 +1,4 @@
-from stack_sweeper import exclude_names_strategy, cloudformation
+from stack_sweeper import cloudformation, exclude_names_strategy
 
 
 def test_not_excluded(stack: cloudformation.Stack):

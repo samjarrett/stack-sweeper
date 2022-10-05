@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
+
 from dateutil.tz import tzutc
 
-
-from stack_sweeper import expiration_tag_strategy, cloudformation
+from stack_sweeper import cloudformation, expiration_tag_strategy
 
 
 def test_expiration_not_valid(stack: cloudformation.Stack):

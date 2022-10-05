@@ -1,6 +1,6 @@
 import time
 from datetime import datetime
-from typing import Any, Dict, Iterator, Optional, List
+from typing import Any, Dict, Iterator, List, Optional
 
 from .log_utils import log
 from .paginator import paginate
@@ -126,7 +126,8 @@ class Stack:
 
         while stack_status in IN_PROGRESS_STACK_STATUSES:
             events = filter(
-                lambda event: event["EventId"] not in event_ids, reversed(self.events),
+                lambda event: event["EventId"] not in event_ids,
+                reversed(self.events),
             )
 
             for event in events:

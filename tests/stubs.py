@@ -1,12 +1,16 @@
-from typing import List, Dict
-from datetime import datetime
 import uuid
+from datetime import datetime
+from typing import Dict, List
 
 from botocore.stub import ANY
 
 
 def stub_get_parameter_value(
-    stubber, name: str, value: str, version: int = 1, param_type: str = "String",
+    stubber,
+    name: str,
+    value: str,
+    version: int = 1,
+    param_type: str = "String",
 ):
     """Stubs SSM get_parameter_value responses"""
     response = {
@@ -85,7 +89,9 @@ def stub_describe_stack(
         ]
     }
     stubber.add_response(
-        "describe_stacks", response, expected_params={"StackName": stack_name},
+        "describe_stacks",
+        response,
+        expected_params={"StackName": stack_name},
     )
 
 
@@ -112,7 +118,9 @@ def stub_update_termination_protection(
 def stub_delete_stack(stubber, stack_name: str):
     """Stubs CloudFormation delete_stack responses"""
     stubber.add_response(
-        "delete_stack", {}, expected_params={"StackName": stack_name},
+        "delete_stack",
+        {},
+        expected_params={"StackName": stack_name},
     )
 
 
@@ -153,7 +161,9 @@ def stub_describe_stack_events(stubber, stack_id: str):
         ]
     }
     stubber.add_response(
-        "describe_stack_events", response, expected_params={"StackName": stack_id},
+        "describe_stack_events",
+        response,
+        expected_params={"StackName": stack_id},
     )
 
 
@@ -177,5 +187,7 @@ def stub_describe_stack_resources(stubber, stack_id: str, resources=Dict[str, st
         ]
     }
     stubber.add_response(
-        "describe_stack_resources", response, expected_params={"StackName": stack_id},
+        "describe_stack_resources",
+        response,
+        expected_params={"StackName": stack_id},
     )

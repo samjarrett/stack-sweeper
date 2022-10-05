@@ -1,28 +1,6 @@
-from itertools import cycle
+from stack_sweeper import cloudformation, limited_strategy
 
-from stack_sweeper import base_strategy, limited_strategy, cloudformation
-
-
-class AlwaysTrueStrategy(base_strategy.BaseStrategy):
-    """An always-true strategy. Because some people want to watch the world burn"""
-
-    def should_remove(self, stack: cloudformation.Stack) -> bool:
-        """The stack should always be removed"""
-        return True
-
-    def __str__(self):
-        return "AlwaysTrueStrategy"
-
-
-class AlternatingTrueStrategy(base_strategy.BaseStrategy):
-    """A flip-flopping strategy"""
-
-    def __init__(self):
-        self.iterator = cycle([True, False])
-
-    def should_remove(self, stack: cloudformation.Stack) -> bool:
-        """The stack should always be removed"""
-        return next(self.iterator)
+from .conftest import AlternatingTrueStrategy, AlwaysTrueStrategy
 
 
 def test_limited_strategy(stack: cloudformation.Stack):
