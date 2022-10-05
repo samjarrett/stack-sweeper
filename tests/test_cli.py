@@ -45,6 +45,7 @@ def test_parse_args():
     assert namespace.log_level == "INFO"
     assert not namespace.delete
     assert namespace.wait
+    assert not namespace.disable_termination_protection
 
     args = [
         "--expiry-tag",
@@ -61,6 +62,7 @@ def test_parse_args():
         "7",
         "--delete",
         "--no-wait",
+        "--disable-termination-protection",
         "--log-level",
         "DEBUG",
     ]
@@ -73,6 +75,7 @@ def test_parse_args():
     assert namespace.log_level == "DEBUG"
     assert namespace.delete
     assert not namespace.wait
+    assert namespace.disable_termination_protection
 
 
 def test_parse_args_required_params():
@@ -84,6 +87,11 @@ def test_parse_args_required_params():
 
     # --no-wait without --delete will exit too
     args = ["--expiry-tag", "myexpiry", "--no-wait"]
+    with pytest.raises(SystemExit):
+        cli.parse_args(args)
+
+    # --disable-termination-protection without --delete will exit too
+    args = ["--expiry-tag", "myexpiry", "--disable-termination-protection"]
     with pytest.raises(SystemExit):
         cli.parse_args(args)
 

@@ -40,10 +40,28 @@ def test_resources(
     assert resources["ResourceTwo"]["ResourceType"] == "AWS::EC2::LaunchTemplate"
 
 
+def test_disable_termination_protection(
+    fake_cloudformation_client: StubbedClient, stack: cloudformation.Stack
+):
+    """Tests Stack.disable_termination_protection()"""
+    stubs.stub_update_termination_protection(
+        fake_cloudformation_client.stub, STACK_ID, False
+    )
+    stack.disable_termination_protection()
+
+
 def test_delete_success(
     fake_cloudformation_client: StubbedClient, stack: cloudformation.Stack
 ):
     """Tests Stack.delete() successful cases"""
+    stubs.stub_delete_stack(fake_cloudformation_client.stub, STACK_ID)
+    stack.delete(False)
+
+    # test when the stack has termination protection enabled
+    stack.termination_protection = True
+    stubs.stub_update_termination_protection(
+        fake_cloudformation_client.stub, STACK_ID, False
+    )
     stubs.stub_delete_stack(fake_cloudformation_client.stub, STACK_ID)
     stack.delete(False)
 
@@ -108,8 +126,11 @@ def test_wait_success(
 
 
 def __generate_describe_stack_response(
-    stack_name: str, tags: List[Dict[str, str]], parameters: List[Dict[str, str]]
-) -> Dict[str, Union[str, datetime, List[Dict[str, str]]]]:
+    stack_name: str,
+    tags: List[Dict[str, str]],
+    parameters: List[Dict[str, str]],
+    termination_protection: bool = False,
+) -> Dict[str, Union[str, bool, datetime, List[Dict[str, str]]]]:
     """Generates a describe_stack response"""
     return {
         "StackName": stack_name,
@@ -120,6 +141,7 @@ def __generate_describe_stack_response(
         "LastUpdatedTime": datetime(2020, 1, 1),
         "Tags": tags,
         "Parameters": parameters,
+        "EnableTerminationProtection": termination_protection,
     }
 
 

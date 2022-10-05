@@ -74,6 +74,13 @@ def parse_args(args: List[str]) -> argparse.Namespace:
         default=False,
     )
     parser.add_argument(
+        "--disable-termination-protection",
+        help="Should stacks with termination protection still be removed?",
+        action="store_true",
+        required=False,
+        default=False,
+    )
+    parser.add_argument(
         "--no-wait",
         help="Should delete operations wait for each stack to finish?",
         action="store_false",
@@ -88,6 +95,11 @@ def parse_args(args: List[str]) -> argparse.Namespace:
 
     if not parsed_args.wait and not parsed_args.delete:
         parser.error("You must specify --delete to use --no-wait")
+
+    if parsed_args.disable_termination_protection and not parsed_args.delete:
+        parser.error(
+            "You must specify --delete to use --disable-termination-protection"
+        )
 
     return parsed_args
 
@@ -157,6 +169,9 @@ def main(args: argparse.Namespace):  # pragma: no cover
 
         if args.delete:
             try:
+                if args.disable_termination_protection and stack.termination_protection:
+                    stack.disable_termination_protection()
+
                 stack.delete(args.wait)
             except Exception as e:  # pylint: disable=broad-except
                 log(str(e), logging.ERROR)

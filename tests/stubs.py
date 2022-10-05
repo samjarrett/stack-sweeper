@@ -70,7 +70,9 @@ def stub_add_tags_to_resource(stubber, name: str, tags: List[Dict]):
     )
 
 
-def stub_describe_stack(stubber, stack_name: str, status: str):
+def stub_describe_stack(
+    stubber, stack_name: str, status: str, termination_protection: bool = False
+):
     """Stubs CloudFormation describe_stacks responses for a specific stack"""
     response = {
         "Stacks": [
@@ -78,6 +80,7 @@ def stub_describe_stack(stubber, stack_name: str, status: str):
                 "StackName": stack_name,
                 "StackStatus": status,
                 "CreationTime": datetime(2020, 1, 1),
+                "EnableTerminationProtection": termination_protection,
             }
         ]
     }
@@ -90,6 +93,20 @@ def stub_describe_stacks(stubber, stacks: List):
     """Stubs CloudFormation describe_stacks responses"""
     response = {"Stacks": stacks}
     stubber.add_response("describe_stacks", response, expected_params={})
+
+
+def stub_update_termination_protection(
+    stubber, stack_name: str, enable_termination_protection: bool
+):
+    """Stubs CloudFormation delete_stack responses"""
+    stubber.add_response(
+        "update_termination_protection",
+        {},
+        expected_params={
+            "StackName": stack_name,
+            "EnableTerminationProtection": enable_termination_protection,
+        },
+    )
 
 
 def stub_delete_stack(stubber, stack_name: str):

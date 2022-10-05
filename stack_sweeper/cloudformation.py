@@ -37,6 +37,7 @@ class Stack:
     created_at: datetime
     last_updated_at: datetime
     marked_by_strategies: List
+    termination_protection: bool
     cloudformation: Any
 
     def __init__(self, **kwargs):
@@ -63,6 +64,7 @@ class Stack:
             last_updated_at=stack_detail.get(
                 "LastUpdatedTime", stack_detail["CreationTime"]
             ),
+            termination_protection=stack_detail["EnableTerminationProtection"],
             cloudformation=cloudformation,
         )
 
@@ -87,8 +89,19 @@ class Stack:
             "StackEvents"
         ]
 
+    def disable_termination_protection(self):
+        """Disables termination protection on the stack"""
+        self.cloudformation.update_termination_protection(
+            StackName=self.stack_id, EnableTerminationProtection=False
+        )
+
     def delete(self, wait: bool = True):
         """Performs a delete against the stack and optionally waits for it to complete"""
+        if self.termination_protection:
+            self.cloudformation.update_termination_protection(
+                StackName=self.stack_id, EnableTerminationProtection=False
+            )
+
         self.cloudformation.delete_stack(StackName=self.stack_id)
 
         if wait:
