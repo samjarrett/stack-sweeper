@@ -24,6 +24,21 @@ def test_status(fake_cloudformation_client: StubbedClient, stack: cloudformation
     assert stack.status == "UPDATE_ROLLBACK_COMPLETE"
 
 
+def test_termination_protection(
+    fake_cloudformation_client: StubbedClient, stack: cloudformation.Stack
+):
+    """Tests Stack.termination_protection"""
+    stubs.stub_describe_stack(
+        fake_cloudformation_client.stub, STACK_ID, "UPDATE_COMPLETE"
+    )
+    assert not stack.termination_protection
+
+    stubs.stub_describe_stack(
+        fake_cloudformation_client.stub, STACK_ID, "UPDATE_ROLLBACK_COMPLETE", True
+    )
+    assert stack.termination_protection
+
+
 def test_resources(
     fake_cloudformation_client: StubbedClient, stack: cloudformation.Stack
 ):
@@ -54,14 +69,6 @@ def test_delete_success(
     fake_cloudformation_client: StubbedClient, stack: cloudformation.Stack
 ):
     """Tests Stack.delete() successful cases"""
-    stubs.stub_delete_stack(fake_cloudformation_client.stub, STACK_ID)
-    stack.delete(False)
-
-    # test when the stack has termination protection enabled
-    stack.termination_protection = True
-    stubs.stub_update_termination_protection(
-        fake_cloudformation_client.stub, STACK_ID, False
-    )
     stubs.stub_delete_stack(fake_cloudformation_client.stub, STACK_ID)
     stack.delete(False)
 
@@ -126,10 +133,7 @@ def test_wait_success(
 
 
 def __generate_describe_stack_response(
-    stack_name: str,
-    tags: List[Dict[str, str]],
-    parameters: List[Dict[str, str]],
-    termination_protection: bool = False,
+    stack_name: str, tags: List[Dict[str, str]], parameters: List[Dict[str, str]],
 ) -> Dict[str, Union[str, bool, datetime, List[Dict[str, str]]]]:
     """Generates a describe_stack response"""
     return {
@@ -141,7 +145,6 @@ def __generate_describe_stack_response(
         "LastUpdatedTime": datetime(2020, 1, 1),
         "Tags": tags,
         "Parameters": parameters,
-        "EnableTerminationProtection": termination_protection,
     }
 
 

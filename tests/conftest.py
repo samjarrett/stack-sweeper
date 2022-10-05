@@ -55,5 +55,4 @@ def stack(
         tags={"MyTag": "TagValue"},
         created_at=datetime(2020, 1, 1),
         last_updated_at=datetime(2020, 1, 1),
-        termination_protection=False,
     )
