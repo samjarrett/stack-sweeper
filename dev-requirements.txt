@@ -8,7 +8,7 @@ astroid==2.12.10
     # via pylint
 attrs==22.1.0
     # via pytest
-black==22.8.0
+black==22.10.0
     # via -r dev-requirements.in
 boto3==1.24.86
     # via -r requirements.txt
@@ -90,11 +90,7 @@ tomlkit==0.11.5
 types-python-dateutil==2.8.19
     # via -r dev-requirements.in
 typing-extensions==4.3.0
-    # via
-    #   astroid
-    #   black
-    #   mypy
-    #   pylint
+    # via mypy
 urllib3==1.26.12
     # via
     #   -r requirements.txt
