@@ -8,7 +8,7 @@ astroid==2.12.10
     # via pylint
 attrs==22.1.0
     # via pytest
-black==22.10.0
+black==22.12.0
     # via -r dev-requirements.in
 boto3==1.24.86
     # via -r requirements.txt
