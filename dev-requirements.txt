@@ -4,7 +4,7 @@
 #
 #    pip-compile dev-requirements.in
 #
-astroid==2.15.6
+astroid==3.0.0
     # via pylint
 black==23.7.0
     # via -r dev-requirements.in
@@ -32,8 +32,6 @@ jmespath==1.0.1
     #   -r requirements.txt
     #   boto3
     #   botocore
-lazy-object-proxy==1.7.1
-    # via astroid
 mccabe==0.7.0
     # via pylint
 mypy==1.5.1
@@ -54,7 +52,7 @@ platformdirs==2.5.2
     #   pylint
 pluggy==1.0.0
     # via pytest
-pylint==2.17.5
+pylint==3.0.1
     # via -r dev-requirements.in
 pytest==7.4.0
     # via
@@ -84,5 +82,3 @@ urllib3==1.26.12
     # via
     #   -r requirements.txt
     #   botocore
-wrapt==1.14.1
-    # via astroid
